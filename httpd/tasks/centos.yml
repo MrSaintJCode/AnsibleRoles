@@ -1,0 +1,28 @@
+- name: '[CentOS] Installing Packages'
+  yum:
+    name: '{{ packages }}'
+    state: latest
+  vars:
+    packages:
+            - httpd
+            - git
+            - vim
+
+- name: '[CentOS] Starting Httpd Service'
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: 'Opening Web Port'
+  iptables:
+    chain: INPUT
+    protocol: 80
+    ctstate: NEW
+    jump: ACCEPT
+    comment: Accept Port 80 Network
+
+- name: 'Cloning Master Repo'
+  git:
+    repo: http://10.29.42.52/mrsaintj/webserver01.git
+    dest: /var/www/html

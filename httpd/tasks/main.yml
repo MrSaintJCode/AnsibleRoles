@@ -1,0 +1,10 @@
+# tasks file for httpd
+- name: "Web Server Install - CentOS"
+  import_tasks: centos.yml
+  when: (ansible_facts['distribution']|lower == "centos") or
+        (ansible_facts['os_family']|lower == "redhat")
+
+- name: "Web Server Install - Ubuntu"
+  import_tasks: ubuntu.yml
+  when: (ansible_facts['distribution']|lower == "ubuntu") or
+        (ansible_facts['distribution']|lower == "debian")

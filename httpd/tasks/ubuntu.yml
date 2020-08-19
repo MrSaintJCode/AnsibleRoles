@@ -1,0 +1,39 @@
+- name: '[Ubuntu] Installing Packages'
+  apt:
+    name: '{{ packages }}'
+    state: latest
+  vars:
+    packages:
+            - apache2
+            - git
+            - vim
+
+- name: '[Ubuntu] Starting Httpd Service'
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: 'Opening Web Port'
+  iptables:
+    chain: INPUT
+    protocol: 80
+    ctstate: NEW
+    jump: ACCEPT
+    comment: Accept Port 80 Network
+
+- name: '[Ubuntu] Verifying /var/www/html'
+  stat:
+    path: /var/www/html/README.md
+  register: stat_results
+
+- name: '[Ubuntu] Cleaning /var/www/html'
+  file:
+    path: /var/www/html/index.html
+    state: absent
+  when: not stat_results.stat.exists
+
+- name: "[Ubuntu] Cloning Master Repo"
+  git:
+    repo: http://10.29.42.52/mrsaintj/webserver01.git
+    dest: /var/www/html
