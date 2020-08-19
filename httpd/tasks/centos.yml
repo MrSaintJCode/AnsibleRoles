@@ -24,5 +24,5 @@
 
 - name: 'Cloning Master Repo'
   git:
-    repo: http://10.29.42.52/mrsaintj/webserver01.git
+    repo: '{{ repo }}'
     dest: /var/www/html

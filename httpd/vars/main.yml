@@ -1,2 +1,3 @@
 ---
 # vars file for httpd
+repo: 'http://add/your/repo.git'
