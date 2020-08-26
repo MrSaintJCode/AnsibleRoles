@@ -1,0 +1,30 @@
+---
+# tasks file for docker
+- name: 'Stopping Container'
+  command: "docker stop {{ rm_container }}"
+  ignore_errors: yes
+  when: rm_container is defined
+
+- name: 'Removing Container'
+  command: "docker rm {{ rm_container }}"
+  ignore_errors: yes
+  when: rm_container is defined
+  
+
+- name: 'Removing old Image'
+  command: "docker rmi {{ rm_image }}"
+  ignore_errors: yes
+  when: rm_image is defined
+  
+
+- name: 'Building Image'
+  command: "docker build -t {{ build_image }} ."
+  args:
+      chdir: '{{ dockerfile_path }}'
+  when: (build_image is defined) and (dockerfile_path is defined)
+  
+
+- name: 'Creating Container'
+  command: "docker run -d --name {{ create_container }} -p 8085:8080 {{ build_image }}"
+  when: (create_container is defined) and (build_image is defined)
+  
