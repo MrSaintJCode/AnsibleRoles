@@ -1,0 +1,19 @@
+---
+# tasks file for kubernetes
+
+- name: 'Creating Deployment'
+  command: "kubectl apply -f {{ deploy_playbook }}"
+  ignore_errors: yes
+  when: deploy_playbook is defined
+
+- name: 'Creating Service'
+  command: "kubectl apply -f {{ deploy_service }}"
+  when: deploy_service is defined
+
+- name: 'Deleting Deployment'
+  command: "kubectl delete deployment {{ deploy_name }}"
+  when: deploy_name is defined
+
+- name: 'Deleting Service'
+  command: "kubrctl delete service {{ service_name }}"
+  when: service_name is defined
