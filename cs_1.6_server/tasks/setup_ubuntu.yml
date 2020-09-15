@@ -1,10 +1,10 @@
 ---
 # tasks file for cs_1.6_server
 
-# Installing CS 1.6 Dedicated Server onto CentOS
+# Installing CS 1.6 Dedicated Server onto Ubuntu
 
 - name: 'Installing Packages'
-  yum:
+  apt:
     name: '{{ packages }}'
     state: latest
   vars:

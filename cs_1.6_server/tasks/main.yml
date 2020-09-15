@@ -7,7 +7,19 @@
   import_tasks: setup_centos.yml
   when: (ansible_facts['distribution']|lower == "centos" or ansible_facts['distribution']|lower == "redhat") and (state == "setup")
 
+- name: '[CentOS] Setting up Server'
+  import_tasks: setup_centos.yml
+  when: (ansible_facts['distribution']|lower == "ubuntu" or ansible_facts['distribution']|lower == "debian") and (state == "setup")
+
 # Server Commands
 - name: 'Starting Game Server'
   import_tasks: server.yml
-  when: (state == "run")
+  when: (state == "start")
+
+- name: 'Stopping Game Server'
+  import_tasks: server.yml
+  when: (state == "stop")
+
+- name: "Getting Config Status"
+  import_tasks: server.yml
+  when: (state == "status")
