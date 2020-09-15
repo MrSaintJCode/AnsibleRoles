@@ -1,0 +1,5 @@
+---
+# vars file for cs_1.6_server:
+folder_name: "SteamCMD"
+game_url: "http://cdn01.counterstrike.com.pk/web/files/hlds4linux_cspak.zip"
+game_name: "cs_server"

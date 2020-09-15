@@ -1,0 +1,64 @@
+---
+# tasks file for cs_1.6_server
+
+- name: 'Installing Packages'
+  yum:
+    name: '{{ packages }}'
+    state: latest
+  vars:
+    packages:
+            - httpd
+            - sudo
+            - rsync
+            - screen
+            - git
+            - vim
+            - wget
+            - unzip
+            - glibc.i686
+
+- name: "Creating {{ folder_name }} Folder"
+  file:
+    path: "/root/{{ folder_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: "Creating {{ game_name }} Folder:"
+  file:
+    path: "/root/{{ folder_name }}/{{ game_name }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'
+
+- name: "Downloading Game"
+  get_url: 
+    url: '{{ game_url }}'
+    dest: '/root/{{ folder_name }}/{{ game_name }}.zip'
+    mode: '0777'
+
+- name: "Unpacking Game Files"
+  unarchive:
+    src: '/root/{{ folder_name }}/{{ game_name }}.zip'
+    dest: '/root/{{ folder_name }}'
+    copy: no
+    list_files: yes
+  register: archive_contents
+
+- name: "Setting up Permissions"
+  file:
+    path: "/root/{{ folder_name }}/{{ archive_contents.files[0] }}"
+    mode: '1777'
+
+- name: "Moving Game Files to {{ game_name }} Folder"
+  shell: "rsync -avzP /root/{{ folder_name }}/{{ archive_contents.files[0] }}/* /root/{{ folder_name }}/{{ game_name }}"
+
+- name: "Setting up Firewall Rules"
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: 27015
+    ctstate: NEW
+    jump: ACCEPT

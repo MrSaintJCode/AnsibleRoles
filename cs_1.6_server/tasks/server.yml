@@ -1,0 +1,10 @@
+- name: "Transferring Startup Script"
+  synchronize:
+    src: ./start.sh
+    dest: /root/{{ folder_name }}/{{ game_name }}/
+  #shell: cd /root/{{ folder_name }}/{{ game_name }} ; sh start.sh
+  when: (state == "run")
+
+- name: "Starting Game File"
+  shell: cd /root/{{ folder_name }}/{{ game_name }} ; sh start.sh &
+  when: (state == "run")

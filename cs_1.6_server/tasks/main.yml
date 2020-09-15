@@ -1,0 +1,13 @@
+---
+# tasks file for cs_1.6_server
+
+
+# Setup Files
+- name: '[CentOS] Setting up Server'
+  import_tasks: setup_centos.yml
+  when: (ansible_facts['distribution']|lower == "centos" or ansible_facts['distribution']|lower == "redhat") and (state == "setup")
+
+# Server Commands
+- name: 'Starting Game Server'
+  import_tasks: server.yml
+  when: (state == "run")
