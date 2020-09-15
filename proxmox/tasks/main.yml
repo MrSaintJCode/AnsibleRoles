@@ -1,0 +1,32 @@
+---
+# tasks file for proxmox
+- name: 'Creating Container(s)'
+  proxmox:
+        vmid: '90{{ item }}'
+        node: '{{ api_host }}'
+        api_user: '{{ api_user }}'
+        api_password: '{{ api_password }}'
+        api_host: '{{ api_host }}'
+        password: '123Test'
+        hostname: 'game0{{ item }}'
+        timeout: 90
+        memory: 1024
+        disk: 32
+        cores: 2
+        storage: 'array01'
+        pubkey: "{{ pubkey }}"
+        netif: '{"net0": "name=eth0,gw=10.29.42.1,ip=10.29.42.23{{ item }}/24,bridge=vmbr0"}'
+        ostemplate: 'array01:vztmpl/centos-7-default_20171212_amd64.tar.xz'
+  with_sequence: start=1 end={{ count }}
+  when: (api_host is defined) and (action == "create") 
+     
+- name: 'Changing Container - {{ state }}'
+  proxmox:
+        vmid: '90{{ item }}'
+        api_user: '{{ api_user }}'
+        api_password: '{{ api_password }}'
+        api_host: '{{ api_host }}'
+        state: '{{ state }}'
+  with_sequence: start=1 end={{ count }}
+  when: (api_host is defined) and (state is defined)
+

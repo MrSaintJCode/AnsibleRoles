@@ -1,0 +1,11 @@
+---
+# vars file for proxmox
+#
+# Node Information
+#api_host: ""
+#api_password: ""
+#api_user: ""
+
+# Standard Information
+#pubkey: "{{ lookup('file', 'roles/proxmox/files/key.pub') }}"
+
