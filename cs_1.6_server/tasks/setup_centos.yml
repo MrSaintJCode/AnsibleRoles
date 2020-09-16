@@ -61,6 +61,6 @@
   iptables:
     chain: INPUT
     protocol: udp
-    destination_port: 27015
+    destination_port: "{{ port | default('27015') }}"
     ctstate: NEW
     jump: ACCEPT
