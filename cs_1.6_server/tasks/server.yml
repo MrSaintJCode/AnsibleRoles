@@ -1,10 +1,3 @@
-- name: "Transferring Startup Script"
-  synchronize:
-    src: ./start.sh
-    dest: /root/{{ folder_name }}/{{ game_name }}/
-  #shell: cd /root/{{ folder_name }}/{{ game_name }} ; sh start.sh
-  when: (state == "start")
-
 - name: "Starting Game File"
   shell: "cd /root/{{ folder_name }}/{{ game_name }} ; screen -A -m -d -S hldstest ./hlds_run -game cstrike +ip {{ ip | default('0.0.0.0') }} +port {{ port | default('27015') }} +maxplayers {{ player | default('32') }} +map de_dust2_long_short +sys_ticrate 1000 &"
   when: (state == "start")
