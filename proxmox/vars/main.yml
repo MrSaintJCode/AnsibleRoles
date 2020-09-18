@@ -9,3 +9,5 @@
 # Standard Information
 #pubkey: "{{ lookup('file', 'roles/proxmox/files/key.pub') }}"
 
+# Playbook Var(s)
+ct_password: '123Test'
