@@ -9,7 +9,6 @@
     state: latest
   vars:
     packages:
-            - httpd
             - sudo
             - rsync
             - screen
@@ -57,10 +56,4 @@
 - name: "Moving Game Files to {{ game_name }} Folder"
   shell: "rsync -avzP /root/{{ folder_name }}/{{ archive_contents.files[0] }}/* /root/{{ folder_name }}/{{ game_name }}"
 
-- name: "Setting up Firewall Rules"
-  iptables:
-    chain: INPUT
-    protocol: udp
-    destination_port: "{{ port | default('27015') }}"
-    ctstate: NEW
-    jump: ACCEPT
+

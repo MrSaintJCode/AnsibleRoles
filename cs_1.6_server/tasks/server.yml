@@ -1,7 +1,84 @@
-- name: "Starting Game File"
-  shell: "cd /root/{{ folder_name }}/{{ game_name }} ; screen -A -m -d -S hldstest ./hlds_run -game cstrike +ip {{ ip | default('0.0.0.0') }} +port {{ port | default('27015') }} +maxplayers {{ player | default('32') }} +map de_dust2_long_short +sys_ticrate 1000 &"
-  when: (state == "start")
 
+# -- Starting the Dedicated Server --
+
+- name: "Creating server.cfg Template"
+  template:
+    src: "server.cfg.j2"
+    dest: "/root/{{ folder_name }}/{{ game_name }}/cstrike/server.cfg"
+    mode: '0777'
+  when: (state == "started")
+
+- name: "Starting Game File"
+  shell: "cd /root/{{ folder_name }}/{{ game_name }} ; screen -A -m -d -S {{ name | default('hldstest') }} ./hlds_run -game cstrike +ip {{ ip | default('0.0.0.0') }} +port {{ port | default('27015') }} +maxplayers {{ players | default('32') }} +map {{ map | default('de_dust2_long_short') }} +sys_ticrate 1000 &"
+  when: (state == "started")
+
+- name: "Setting up Firewall Rules"
+  iptables:
+    chain: INPUT
+    protocol: udp
+    destination_port: "{{ port | default('27015') }}"
+    ctstate: NEW
+    jump: ACCEPT
+  when: (state == "started")
+
+# -- Starting the Dedicated Server --
+
+# -- Stopping the Dedicated Server --
+
+  # Add list stop ex. ['name', 'other_name', 'default']
 - name: "Stopping Game"
-  shell: screen -X -S $(screen -ls | grep -i 'hldstest' | awk '{print $1}') quit
-  when: (state == "stop")
+  shell: "screen -X -S $(screen -ls | grep -w {{ name | default('hldstest') }} | awk '{print $1}') quit"
+  when: (state == "stopped")
+
+ # -- Stopping the Dedicated Server --
+
+ # -- Get the list of the Dedicated Servers running --
+
+- name: "Grabbing the List of Running Dedicated Server(s)"
+  shell: "screen -ls | grep -i 'detached' | awk '{print $1}'"
+  register: screen_list
+  when: (state == "list")
+
+- name: "Grabbing the List of Running Dedicated Server(s)"
+  shell: "screen -ls | grep -i 'detached' | awk '{print $1}'"
+  register: screen_list
+  when: (state == "list")
+
+- name: "Screen List Output"
+  debug:
+    msg: "{{ screen_list.stdout.split('\n') }}"
+  when: (state == "list")
+
+# -- Get the list of the Dedicated Servers running --
+
+# -- Clean up all Files --
+
+- name: "Checking if Game Files Exist"
+  stat:
+    path: "/root/{{ folder_name }}"
+  register: game_files
+
+- name: "Checking if Steam Files Exist"
+  stat:
+    path: "/root/Steam"
+  register: steam_files
+
+- name: "Removing Game Files - /root/{{ folder_name }}"
+  file:
+    path: "/root/{{ folder_name }}"
+    state: absent
+  when: (steam_files.stat.exists) and 
+        (state == "clean") 
+
+- name: "Removing Steam Folder - /root/Steam"
+  file:
+    path: "/root/Steam"
+    state: absent
+  when: (steam_files.stat.exists ) and 
+        (state == "clean")
+
+# -- Clean up all Files --
+
+
+
+

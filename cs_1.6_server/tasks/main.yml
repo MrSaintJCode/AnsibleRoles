@@ -14,12 +14,7 @@
 # Server Commands
 - name: 'Starting Game Server'
   import_tasks: server.yml
-  when: (state == "start")
-
-- name: 'Stopping Game Server'
-  import_tasks: server.yml
-  when: (state == "stop")
-
-- name: "Getting Config Status"
-  import_tasks: server.yml
-  when: (state == "status")
+  when: (state == "started") or
+        (state == "stopped") or
+        (state == "list") or
+        (state == "clean")
